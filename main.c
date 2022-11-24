@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ini.h"
 
 struct repository{
     char* worktree;
