@@ -1,2 +1,2 @@
 default:
-	g++ main.c -o ./bin/git
+	g++ main.c utils/path_join.c utils/get_repositoryformatversion.c -o ./bin/git

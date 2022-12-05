@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <errno.h>
+#include "utils/utils.h"
 
 struct repository
 {
@@ -11,67 +12,6 @@ struct repository
     char *conf;
 };
 
-
-char* get_repositoryformatversion(const char *path)
-{
-    int i;
-    int j;
-    FILE *ptr;
-    char ch;
-    char* repositoryformatversion = (char*)malloc(sizeof(char)*100); 
-    ptr = fopen(path, "r");
-
-    if (ptr == NULL)
-    {
-        return NULL;
-    }
-
-    i = 0;
-    j = 0;
-
-    char key[] = "repositoryformatversion";
-    int found = 0;
-    do
-    {
-        if (i == strlen(key))
-        {
-            found = 1;
-        }
-        char ch = fgetc(ptr);
-
-        if (found == 0)
-        {
-            if (ch == key[i])
-            {
-                i++;
-            }
-            else if (i > 0)
-            {
-                i = 0;
-            }
-        }
-
-        else if (found == 1)
-        {
-            if (ch == ' ' || ch == '=')
-            {
-                continue;
-            }
-            else if (ch == '\n')
-            {
-                break;
-            }
-            else
-            {
-                repositoryformatversion[j++] = ch;
-            }
-        }
-
-    } while (ch != EOF);
-
-    fclose(ptr);
-    return repositoryformatversion;
-}
 
 struct repository init_repo(const char *path, int force)
 {
@@ -115,31 +55,6 @@ struct repository init_repo(const char *path, int force)
     return repo;
 };
 
-char* path_join(char* destination, const char* path1, const char* path2){
-
-    char* dir_sep = "/";
-#ifdef WIN32
-    dir_sep[0] = '\\';
-#endif
-
-    if(path1==NULL && path2==NULL){
-        strcpy(destination,"");
-    }
-    else if(path1==NULL){
-        strcpy(destination,path2);
-    }
-    else if(path2==NULL){
-        strcpy(destination,path1);
-    }
-    else{
-        strcpy(destination,path1);
-        if(path1[strlen(path1)-1]!=dir_sep[0]){
-            strcat(destination,dir_sep);
-        }
-        strcat(destination,path2); 
-    }
-    return destination;
-}
 
 char* repo_path(struct repository repo, const char* path){
     int len = strlen(repo.gitdir) + strlen(path) + 2;
